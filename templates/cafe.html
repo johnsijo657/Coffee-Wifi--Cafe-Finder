@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}{{ cafe.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h2>{{ cafe.name }}</h2>
+                    <div class="d-flex gap-3 mt-2">
+                        <span class="badge bg-primary">{{ cafe.coffee_rating }} Coffee</span>
+                        <span class="badge bg-success">{{ cafe.wifi_rating }} Wifi</span>
+                        <span class="badge bg-warning text-dark">{{ cafe.power_rating }} Power</span>
+                        {% if cafe.restroom %}
+                            <span class="badge bg-info">Restroom Available</span>
+                        {% endif %}
+                        {% if cafe.can_take_calls %}
+                            <span class="badge bg-secondary">Call-Friendly</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Location:</strong> {{ cafe.location }}</p>
+                    <p><strong>Hours:</strong> {{ cafe.open_time }} - {{ cafe.close_time }}</p>
+                    {% if cafe.seats %}
+                        <p><strong>Seating:</strong> {{ cafe.seats }}</p>
+                    {% endif %}
+                    
+                    <div class="mt-4">
+                        <a href="{{ cafe.map_url }}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-map-marked-alt"></i> View on Map
+                        </a>
+                        {% if logged_in %}
+                            <button class="btn btn-outline-light ms-2" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                <i class="fas fa-edit"></i> Leave Review
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h3>Reviews</h3>
+                </div>
+                <div class="card-body">
+                    {% if cafe.reviews %}
+                        {% for review in cafe.reviews %}
+                            <div class="mb-3 pb-3 border-bottom border-secondary">
+                                <div class="d-flex justify-content-between">
+                                    <h5>{{ review.author.name }}</h5>
+                                    <div>
+                                        {% for i in range(review.rating) %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% endfor %}
+                                        {% for i in range(5 - review.rating) %}
+                                            <i class="far fa-star text-warning"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <p class="text-muted">{{ review.created_at.strftime('%B %d, %Y') }}</p>
+                                <p>{{ review.text }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No reviews yet. Be the first to review!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header">
+                    <h4>Amenities</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
+                            Coffee Quality
+                            <span class="badge bg-primary rounded-pill">{{ cafe.coffee_rating }}</span>
+                        </li>
+                        <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
+                            Wifi Strength
+                            <span class="badge bg-primary rounded-pill">{{ cafe.wifi_rating }}</span>
+                        </li>
+                        <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
+                            Power Outlets
+                            <span class="badge bg-primary rounded-pill">{{ cafe.power_rating }}</span>
+                        </li>
+                        {% if cafe.seats %}
+                        <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
+                            Seating Capacity
+                            <span class="badge bg-primary rounded-pill">{{ cafe.seats }}</span>
+                        </li>
+                        {% endif %}
+                        <li class="list-group-item bg-dark text-white">
+                            Restroom: {% if cafe.restroom %}<i class="fas fa-check text-success"></i>{% else %}<i class="fas fa-times text-danger"></i>{% endif %}
+                        </li>
+                        <li class="list-group-item bg-dark text-white">
+                            Can take calls: {% if cafe.can_take_calls %}<i class="fas fa-check text-success"></i>{% else %}<i class="fas fa-times text-danger"></i>{% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h4>Quick Actions</h4>
+                </div>
+                <div class="card-body">
+                    <a href="{{ url_for('cafes') }}" class="btn btn-outline-light w-100 mb-2">
+                        <i class="fas fa-arrow-left"></i> Back to All Cafes
+                    </a>
+                    <a href="{{ cafe.map_url }}" target="_blank" class="btn btn-outline-light w-100 mb-2">
+                        <i class="fas fa-directions"></i> Get Directions
+                    </a>
+                    {% if logged_in %}
+                        <button class="btn btn-outline-light w-100" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                            <i class="fas fa-edit"></i> Write a Review
+                        </button>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-light w-100">
+                            <i class="fas fa-sign-in-alt"></i> Login to Review
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Write a Review</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('show_cafe', cafe_id=cafe.id) }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.rating.label(class="form-label") }}
+                        {{ form.rating(class="form-select") }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.text.label(class="form-label") }}
+                        {{ form.text(class="form-control", rows="4") }}
+                    </div>
+                    <div class="d-grid gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

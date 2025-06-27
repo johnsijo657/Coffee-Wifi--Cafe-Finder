@@ -1,0 +1,69 @@
+:root {
+  --primary: #6F4E37; /* Coffee brown */
+  --secondary: #C9A66B; /* Latte cream */
+  --accent: #E3B23C; /* Golden accent */
+  --light: #F4F1DE; /* Light cream */
+  --dark: #3D3522; /* Dark brown */
+}
+
+body {
+  background-color: var(--light);
+  color: var(--dark);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--primary) !important;
+}
+
+/* Jumbotron */
+.jumbotron {
+  background: linear-gradient(rgba(0,0,0,0.7), url('static/imgs/coffee-bg.jpg'));
+  background-size: cover;
+  color: rgb(38, 38, 16);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-warning {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--dark);
+}
+
+.btn-join {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+  color: white;
+}
+
+.btn-join:hover {
+  background-color: #b89359;
+  border-color: #b89359;
+  color: white;
+}
+
+/* Cards */
+.card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Add this new divider style */
+.divider {
+  height: 3px;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  margin: 2rem 0;
+  border-radius: 3px;
+}
+
+.coffee-icon {
+  color: var(--primary);
+  margin-right: 8px;
+} 

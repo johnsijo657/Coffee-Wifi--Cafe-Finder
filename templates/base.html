@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="Find the perfect cafe to work from with great coffee, wifi, and power outlets.">
+    <link rel="icon" href="static/imgs/cafe.png">
+    {% block styles %}
+    {{ bootstrap.load_css() }}
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    {% endblock %}
+    
+    <title>{% block title %}{% endblock %} | Coffee & Wifi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('home') }}">
+          <i class="fas fa-coffee"></i> Coffee & Wifi
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('cafes') }}">Cafes</a>
+            </li>
+            {% if logged_in %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('add_cafe') }}">Add Cafe</a>
+            </li>
+            {% endif %}
+          </ul>
+          <ul class="navbar-nav">
+            {% if logged_in %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                <i class="fas fa-user-circle"></i> {{ current_user.name }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-dark">
+                <li><a class="dropdown-item" href="#">My Profile</a></li>
+                <li><a class="dropdown-item" href="#">My Reviews</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+              </ul>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show mb-0 text-center" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="bg-dark text-white py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5><i class="fas fa-coffee"></i> Coffee & Wifi</h5>
+            <p class="mb-0">Find the perfect workspace cafe with all the amenities you need.</p>
+          </div>
+          <div class="col-md-3">
+            <h5>Links</h5>
+            <ul class="list-unstyled">
+              <li><a href="{{ url_for('home') }}" class="text-white">Home</a></li>
+              <li><a href="{{ url_for('cafes') }}" class="text-white">Cafes</a></li>
+              <li><a href="{{ url_for('add_cafe') }}" class="text-white">Add Cafe</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h5>Connect</h5>
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-white"><i class="fab fa-twitter"></i> Twitter</a></li>
+              <li><a href="#" class="text-white"><i class="fab fa-instagram"></i> Instagram</a></li>
+              <li><a href="#" class="text-white"><i class="fab fa-github"></i> GitHub</a></li>
+            </ul>
+          </div>
+        </div>
+        <hr class="my-4 bg-secondary">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="mb-0">&copy; 2023 Coffee & Wifi. All rights reserved.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <a href="#" class="text-white me-3">Privacy Policy</a>
+            <a href="#" class="text-white">Terms of Service</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    {{ bootstrap.load_js() }}
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
